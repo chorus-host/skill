@@ -1,0 +1,25 @@
+{
+  "name": "chorus-host",
+  "displayName": "chorus.host",
+  "description": "Publish static sites to <slug>.chorus.host and deploy APIs and webhooks as Cloudflare Workers at <slug>.worker.chorus.host. No signup needed for a 24-hour site.",
+  "version": "0.1.0",
+  "author": {
+    "name": "chorus.host"
+  },
+  "homepage": "https://chorus.host",
+  "repository": "https://github.com/chorus-host/skill",
+  "license": "MIT",
+  "keywords": [
+    "chorus.host",
+    "publish",
+    "static-hosting",
+    "deploy",
+    "website",
+    "share",
+    "cloudflare-workers",
+    "api",
+    "webhooks"
+  ],
+  "logo": "assets/logo.svg",
+  "skills": "./skills/"
+}

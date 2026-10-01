@@ -1,0 +1,10 @@
+{
+  "name": "chorus-host",
+  "version": "0.1.0",
+  "description": "Publish static sites to <slug>.chorus.host and deploy Cloudflare Workers from Gemini CLI.",
+  "mcpServers": {
+    "chorus": {
+      "httpUrl": "https://chorus.host/mcp"
+    }
+  }
+}

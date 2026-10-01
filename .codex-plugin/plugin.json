@@ -1,0 +1,41 @@
+{
+  "name": "chorus-host",
+  "version": "0.1.0",
+  "description": "Publish static sites to <slug>.chorus.host and deploy Cloudflare Workers at <slug>.worker.chorus.host.",
+  "author": {
+    "name": "chorus.host",
+    "url": "https://chorus.host"
+  },
+  "homepage": "https://chorus.host",
+  "repository": "https://github.com/chorus-host/skill",
+  "license": "MIT",
+  "keywords": [
+    "chorus.host",
+    "publish",
+    "static-hosting",
+    "deploy",
+    "website",
+    "cloudflare-workers",
+    "api",
+    "webhooks"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "chorus.host",
+    "shortDescription": "Publish websites and deploy API backends from Codex.",
+    "longDescription": "Publish HTML files, static sites, reports, and dashboards to a public HTTPS URL at <slug>.chorus.host, and deploy APIs and webhooks as Cloudflare Workers at <slug>.worker.chorus.host. Anonymous sites need no account and last 24 hours. Sign in with an emailed code to keep them.",
+    "developerName": "chorus.host",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://chorus.host",
+    "defaultPrompt": [
+      "Publish this folder to chorus.host and give me the link",
+      "Deploy this Hono app as a chorus.host worker"
+    ],
+    "brandColor": "#09090B",
+    "logo": "./assets/logo.svg"
+  }
+}

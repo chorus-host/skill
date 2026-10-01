@@ -1,0 +1,35 @@
+{
+  "$schema": "https://www.schemastore.org/claude-code-marketplace.json",
+  "name": "chorus-host",
+  "owner": {
+    "name": "chorus.host",
+    "url": "https://chorus.host"
+  },
+  "metadata": {
+    "description": "The chorus.host plugin: publish websites and deploy Cloudflare Workers from your agent.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "chorus-host",
+      "source": "./",
+      "description": "Publish static sites to <slug>.chorus.host and deploy APIs and webhooks as Cloudflare Workers at <slug>.worker.chorus.host. No signup needed for a 24-hour site.",
+      "version": "0.1.0",
+      "author": {
+        "name": "chorus.host",
+        "url": "https://chorus.host"
+      },
+      "homepage": "https://chorus.host",
+      "repository": "https://github.com/chorus-host/skill",
+      "license": "MIT",
+      "keywords": [
+        "chorus.host",
+        "publish",
+        "static-hosting",
+        "deploy",
+        "cloudflare-workers"
+      ],
+      "category": "deployment"
+    }
+  ]
+}

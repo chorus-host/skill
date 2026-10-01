@@ -1,0 +1,24 @@
+{
+  "$schema": "https://www.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "chorus-host",
+  "version": "0.1.0",
+  "description": "Publish static sites to <slug>.chorus.host and deploy APIs and webhooks as Cloudflare Workers at <slug>.worker.chorus.host. No signup needed for a 24-hour site.",
+  "author": {
+    "name": "chorus.host",
+    "url": "https://chorus.host"
+  },
+  "homepage": "https://chorus.host",
+  "repository": "https://github.com/chorus-host/skill",
+  "license": "MIT",
+  "keywords": [
+    "chorus.host",
+    "publish",
+    "static-hosting",
+    "deploy",
+    "website",
+    "share",
+    "cloudflare-workers",
+    "api",
+    "webhooks"
+  ]
+}
