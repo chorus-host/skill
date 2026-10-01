@@ -83,6 +83,22 @@ beacon deploy --pretty
 | `gemini-extension.json` | Gemini CLI extension. The skill is discovered from `skills/` |
 | `assets/logo.svg` | Logo |
 
+## Privacy and data
+
+Everything this plugin sends goes to chorus.host or its file storage:
+
+- API calls, including the MCP server at `https://chorus.host/mcp`, go to `https://chorus.host`.
+- File contents are uploaded straight to Cloudflare R2 (`*.r2.cloudflarestorage.com`) through presigned URLs that the chorus.host API returns.
+- Signing in sends your email address to chorus.host, which emails you a 6-digit code.
+- `scripts/publish.py` reads an API key from `CHORUS_API_KEY`, `BEACON_API_KEY` or `~/.config/beacon/config.json` and sends it only to the chorus.host API (or to the URL you set in `CHORUS_API_URL`).
+- The skill may download `publish.py` and the `beacon` CLI installer from chorus.host.
+
+Anonymous sites are deleted after 24 hours. Sites and workers in an account stay until you delete them.
+
+- Privacy policy: https://chorus.host/privacy
+- Terms: https://chorus.host/terms
+- Support: support@chorus.host
+
 ## Docs
 
 - Agent reference: https://chorus.host/skill.md

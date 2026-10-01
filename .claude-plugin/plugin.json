@@ -9,6 +9,8 @@
   },
   "homepage": "https://chorus.host",
   "repository": "https://github.com/chorus-host/skill",
+  "privacyPolicyUrl": "https://chorus.host/privacy",
+  "termsOfServiceUrl": "https://chorus.host/terms",
   "license": "MIT",
   "keywords": [
     "chorus.host",
