@@ -5,6 +5,7 @@
     python3 publish.py ./dist                    # a folder
     python3 publish.py report.html               # one file (an .html file is served as index.html)
     python3 publish.py ./dist my-site            # pick the subdomain: my-site.chorus.host
+    python3 publish.py ./dist --expires 2h       # delete the site 2 hours from now
 
 Without an API key the site is anonymous: it lasts 24 hours and the output
 includes a claim URL the user can open to keep it. With an API key the site is
@@ -23,6 +24,10 @@ The slug and claim token are kept per published path in ./.beacon/publish.json
 (git-ignored through ./.beacon/.gitignore), so two different files published
 from one folder get two different sites. Use --no-save to skip that.
 
+--expires DURATION|RFC3339 (90m, 2h, 7d, 2026-10-08T00:00:00Z) sets when the
+site is deleted. Without an API key it can only be sooner than 24 hours; with
+one, any future time.
+
 Set CHORUS_CLIENT=<harness>/<version> (e.g. claude-code/2.0) to identify your
 agent; it is sent as the X-Chorus-Client header.
 
@@ -40,10 +45,11 @@ import os
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 import uuid
 
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 DEFAULT_API_URL = "https://chorus.host"
 DOCS_URL = "https://chorus.host/skill.md"
 STATE_FILE = os.path.join(".beacon", "publish.json")
@@ -407,6 +413,20 @@ def save_state(state):
         return False
 
 
+def parse_expires(raw):
+    """Turn 90m / 2h / 7d / an RFC 3339 time into an RFC 3339 UTC string."""
+    raw = raw.strip()
+    units = {"m": 60, "h": 3600, "d": 86400}
+    if raw[:-1].isdigit() and raw[-1:] in units:
+        seconds = int(raw[:-1]) * units[raw[-1]]
+        if seconds < 60:
+            raise PublishError("--expires must be at least a minute away")
+        return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(time.time() + seconds)), seconds
+    if "T" in raw and (raw.endswith("Z") or "+" in raw[10:] or "-" in raw[10:]):
+        return raw, None
+    raise PublishError("--expires takes a duration (90m, 2h, 7d) or an RFC 3339 time, not %r" % raw)
+
+
 def create_site(client, files, slug):
     body = {"files": files}
     if slug:
@@ -421,6 +441,13 @@ def publish(args):
     if not args.anonymous:
         api_key = os.environ.get("CHORUS_API_KEY") or os.environ.get("BEACON_API_KEY") or config_api_key()
     wanted_slug = (args.slug_flag or args.slug or "").strip().lower()
+
+    expires_at = None
+    if args.expires:
+        expires_at, seconds = parse_expires(args.expires)
+        if not api_key and seconds is not None and seconds > 86400:
+            raise PublishError("--expires %s is more than 24 hours: without an API key a site can only expire "
+                               "sooner. Sign in (or set CHORUS_API_KEY) to keep a site longer" % args.expires)
 
     entries, skipped = collect(args.path)
     if not entries:
@@ -499,6 +526,13 @@ def publish(args):
     if site.get("ownerId"):
         claim_token = ""  # owned sites are managed with the API key; a claim token no longer applies
 
+    if expires_at:
+        status, meta = client.call("PATCH", "/v1/sites/%s/metadata" % slug, {"expiresAt": expires_at}, claim_token)
+        if status == 200:
+            site = meta.get("site") or site
+        else:
+            notes.append("the site is live, but the expiry was not set: %s" % error_text(status, meta))
+
     anonymous = bool(site.get("expiresAt")) and not site.get("ownerId")
     out = {
         "url": site.get("url"),
@@ -513,6 +547,9 @@ def publish(args):
         "alreadyStored": len(already),
         "totalBytes": total,
     }
+    if len(entries) == 1 and site.get("url"):
+        remote = entries[0][1]
+        out["fileUrl"] = site["url"] + "/" + ("" if remote == "index.html" else urllib.parse.quote(remote))
     if claim_token:
         out["claimUrl"] = res.get("claimUrl") or "%s/claim/%s#%s" % (base, slug, claim_token)
         out["claimToken"] = claim_token
@@ -547,6 +584,8 @@ def main(argv=None):
     parser.add_argument("slug", nargs="?", default="", help="subdomain to use, e.g. my-site for my-site.chorus.host")
     parser.add_argument("--slug", dest="slug_flag", metavar="SLUG", default="", help="same as the positional slug")
     parser.add_argument("--api-url", default="", help="API base URL (default: $CHORUS_API_URL or %s)" % DEFAULT_API_URL)
+    parser.add_argument("--expires", default="", metavar="WHEN",
+                        help="delete the site at this time: 90m, 2h, 7d or RFC 3339 (max 24h without an API key)")
     parser.add_argument("--anonymous", action="store_true", help="ignore any API key and publish a 24-hour anonymous site")
     parser.add_argument("--no-save", action="store_true", help="don't read or write ./.beacon/publish.json")
     parser.add_argument("--dry-run", action="store_true", help="print the manifest that would be sent, without any network calls")
@@ -570,6 +609,8 @@ def main(argv=None):
     log("Published %d file(s) to %s" % (out["files"], out["url"]))
     if out.get("anonymous"):
         log("Anonymous site: it expires %s. To keep it, open the claimUrl and sign in." % out.get("expiresAt"))
+    elif out.get("expiresAt"):
+        log("expires %s" % out.get("expiresAt"))
     return 0
 
 

@@ -1,13 +1,26 @@
-# chorus.host skill
+# publish-website: an agent skill that deploys a website and returns a live URL
 
-An agent skill and plugin for [chorus.host](https://chorus.host). It lets your coding agent:
+Ask your coding agent to "publish this", "host this" or "put this online" and it uploads the folder to [chorus.host](https://chorus.host) and hands back `https://<slug>.chorus.host`. No account needed. Works in Claude Code, Codex, Cursor, Gemini CLI, OpenCode and any agent that reads SKILL.md.
 
-- publish HTML files, static sites, reports, and dashboards to `https://<slug>.chorus.host`
-- deploy APIs and webhooks as Cloudflare Workers at `https://<slug>.worker.chorus.host`
+What it hosts:
 
-You don't need an account. An anonymous site lasts 24 hours and comes with a claim link; sign in with an emailed code to keep it.
+- HTML reports, dashboards and mini apps, plus whole static sites, PDFs and images, at `https://<slug>.chorus.host`
+- APIs and webhook receivers as Cloudflare Workers at `https://<slug>.worker.chorus.host` (free account, no Cloudflare account)
 
-Once it's installed, ask your agent to "publish this folder", "put this report online", or "deploy this Hono app".
+What your agent returns:
+
+```text
+Your site is live:
+
+https://quiet-river-42.chorus.host
+
+It will be deleted in 24 hours. To keep it, open this link and sign in with your email:
+https://chorus.host/claim/quiet-river-42#ctk_...
+```
+
+An anonymous site lasts 24 hours; the claim link keeps it, and signing in takes an emailed code, no password. How claiming works: https://chorus.host/guides/host-static-site-no-signup#claim-the-site-later
+
+No shell in your agent? Use the MCP server instead: `claude mcp add --transport http chorus https://chorus.host/mcp` (setup for other clients: https://chorus.host/mcp).
 
 ## Install
 
