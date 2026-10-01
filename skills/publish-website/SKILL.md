@@ -40,7 +40,7 @@ If you can't make network requests from where you run (a sandbox without interne
 curl -sS https://chorus.host/v1/publish -H 'X-Chorus-Client: claude-code/2.0' -F file=@index.html
 ```
 
-The response is JSON: `url`, `claimUrl`, `claimToken`, `expiresAt`, and `fileUrl` (the direct link when you sent one file). A single `.html` file becomes the home page whatever it's called. More files: repeat `-F file=@path` (use `-F "file=@app.js;filename=assets/app.js"` to keep a folder path), or zip the folder and send `-F archive=@site.zip`. Add `-F slug=my-site` to pick the subdomain, `-H 'Accept: text/plain'` to get only the link. Up to 4 MB of files per call without an API key, 10 MB with one; bigger sites use the three calls below.
+The response is JSON: `url`, `claimUrl`, `claimToken`, `expiresAt`, and `fileUrl` (the direct link when you sent one file). A single `.html` file becomes the home page whatever it's called. More files: repeat `-F file=@path` (use `-F "file=@app.js;filename=js/app.js"` to keep a folder path), or zip the folder and send `-F archive=@site.zip`. Add `-F slug=my-site` to pick the subdomain, `-H 'Accept: text/plain'` to get only the link. Up to 4 MB of files per call without an API key, 10 MB with one; bigger sites use the three calls below.
 
 Private link? Add `-F username=client -F password=...` and the site is behind a browser login prompt before it goes live, also without an account. Give the user the URL, username and password, and send the password separately from the link.
 
@@ -70,7 +70,7 @@ Rules:
 - `hash` is `sha256:` plus 64 lowercase hex characters of the file bytes. `size` is in bytes.
 - PUT each file in `uploads.pending` to its `uploadUrl` with exactly the `Content-Type` you declared. Files the server already has come back in `uploads.skipped`; don't upload those.
 - Finalize an anonymous site with `X-Claim-Token: <claimToken>`. Without it you get `401`.
-- More files: list them all in `files` (nested paths like `assets/app.js` are fine) and PUT each one. `/` serves `index.html`.
+- More files: list them all in `files` (nested paths like `js/app.js` are fine) and PUT each one. `/` serves `index.html`.
 
 ## Publish a folder
 
