@@ -1,16 +1,16 @@
 {
-  "name": "chorus-host",
-  "displayName": "chorus.host",
-  "description": "Publish static sites to <slug>.chorus.host and deploy APIs and webhooks as Cloudflare Workers at <slug>.worker.chorus.host. No signup needed for a 24-hour site.",
+  "name": "beacon-host",
+  "displayName": "beacon.host",
+  "description": "Publish static sites to <slug>.beacon.host and deploy APIs and webhooks as Cloudflare Workers at <slug>.worker.beacon.host. No signup needed for a 24-hour site.",
   "version": "0.1.0",
   "author": {
-    "name": "chorus.host"
+    "name": "beacon.host"
   },
-  "homepage": "https://chorus.host",
-  "repository": "https://github.com/chorus-host/skill",
+  "homepage": "https://beacon.host",
+  "repository": "https://github.com/beacon-host/skill",
   "license": "MIT",
   "keywords": [
-    "chorus.host",
+    "beacon.host",
     "publish",
     "static-hosting",
     "deploy",

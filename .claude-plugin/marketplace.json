@@ -1,29 +1,29 @@
 {
   "$schema": "https://www.schemastore.org/claude-code-marketplace.json",
-  "name": "chorus-host",
+  "name": "beacon-host",
   "owner": {
-    "name": "chorus.host",
-    "url": "https://chorus.host"
+    "name": "beacon.host",
+    "url": "https://beacon.host"
   },
   "metadata": {
-    "description": "The chorus.host plugin: publish websites and deploy Cloudflare Workers from your agent.",
+    "description": "The beacon.host plugin: publish websites and deploy Cloudflare Workers from your agent.",
     "version": "0.1.0"
   },
   "plugins": [
     {
-      "name": "chorus-host",
+      "name": "beacon-host",
       "source": "./",
-      "description": "Publish static sites to <slug>.chorus.host and deploy APIs and webhooks as Cloudflare Workers at <slug>.worker.chorus.host. No signup needed for a 24-hour site.",
+      "description": "Publish static sites to <slug>.beacon.host and deploy APIs and webhooks as Cloudflare Workers at <slug>.worker.beacon.host. No signup needed for a 24-hour site.",
       "version": "0.1.0",
       "author": {
-        "name": "chorus.host",
-        "url": "https://chorus.host"
+        "name": "beacon.host",
+        "url": "https://beacon.host"
       },
-      "homepage": "https://chorus.host",
-      "repository": "https://github.com/chorus-host/skill",
+      "homepage": "https://beacon.host",
+      "repository": "https://github.com/beacon-host/skill",
       "license": "MIT",
       "keywords": [
-        "chorus.host",
+        "beacon.host",
         "publish",
         "static-hosting",
         "deploy",

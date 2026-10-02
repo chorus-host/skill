@@ -1,10 +1,10 @@
 {
-  "name": "chorus-host",
+  "name": "beacon-host",
   "version": "0.1.0",
-  "description": "Publish static sites to <slug>.chorus.host and deploy Cloudflare Workers from Gemini CLI.",
+  "description": "Publish static sites to <slug>.beacon.host and deploy Cloudflare Workers from Gemini CLI.",
   "mcpServers": {
-    "chorus": {
-      "httpUrl": "https://chorus.host/mcp"
+    "beacon": {
+      "httpUrl": "https://beacon.host/mcp"
     }
   }
 }

@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""Publish a folder or a single file to chorus.host. Python 3.8+, standard library only.
+"""Publish a folder or a single file to beacon.host. Python 3.8+, standard library only.
 
-    curl -fsSLO https://chorus.host/publish.py   # download once
+    curl -fsSLO https://beacon.host/publish.py   # download once
     python3 publish.py ./dist                    # a folder
     python3 publish.py report.html               # one file (an .html file is served as index.html)
-    python3 publish.py ./dist my-site            # pick the subdomain: my-site.chorus.host
+    python3 publish.py ./dist my-site            # pick the subdomain: my-site.beacon.host
     python3 publish.py ./dist --expires 2h       # delete the site 2 hours from now
 
 Without an API key the site is anonymous: it lasts 24 hours and the output
 includes a claim URL the user can open to keep it. With an API key the site is
-permanent. The key is read from CHORUS_API_KEY or BEACON_API_KEY, else from
+permanent. The key is read from BEACON_API_KEY, else from
 ~/.config/beacon/config.json ({"apiKey": "chk_..."}, the file `beacon login`
 writes).
 
@@ -28,8 +28,8 @@ from one folder get two different sites. Use --no-save to skip that.
 site is deleted. Without an API key it can only be sooner than 24 hours; with
 one, any future time.
 
-Set CHORUS_CLIENT=<harness>/<version> (e.g. claude-code/2.0) to identify your
-agent; it is sent as the X-Chorus-Client header.
+Set BEACON_CLIENT=<harness>/<version> (e.g. claude-code/2.0) to identify your
+agent; it is sent as the X-Beacon-Client header.
 
 Prints one JSON object on stdout (url, slug, claimUrl, ...) and a short
 summary on stderr.
@@ -50,8 +50,8 @@ import urllib.request
 import uuid
 
 VERSION = "1.2.0"
-DEFAULT_API_URL = "https://chorus.host"
-DOCS_URL = "https://chorus.host/skill.md"
+DEFAULT_API_URL = "https://beacon.host"
+DOCS_URL = "https://beacon.host/skill.md"
 STATE_FILE = os.path.join(".beacon", "publish.json")
 PART_SIZE = 8 * 1024 * 1024  # the server presigns multipart uploads in 8 MiB parts
 HASH_CHUNK = 1024 * 1024
@@ -253,8 +253,8 @@ class Client:
     def headers(self, claim_token="", extra=None):
         h = {
             "Accept": "application/json",
-            "User-Agent": "chorus-publish.py/%s (Python %d.%d)" % (VERSION, sys.version_info[0], sys.version_info[1]),
-            "X-Chorus-Client": os.environ.get("CHORUS_CLIENT") or "publish.py/" + VERSION,
+            "User-Agent": "beacon-publish.py/%s (Python %d.%d)" % (VERSION, sys.version_info[0], sys.version_info[1]),
+            "X-Beacon-Client": os.environ.get("BEACON_CLIENT") or os.environ.get("CHORUS_CLIENT") or "publish.py/" + VERSION,
         }
         if self.api_key:
             h["Authorization"] = "Bearer " + self.api_key
@@ -301,7 +301,7 @@ def error_text(status, res):
     msg = res.get("error", res) if isinstance(res, dict) else res
     text = "%s (HTTP %s)" % (msg, status)
     if status == 429:
-        text += ". Anonymous publishing is rate limited per IP; set CHORUS_API_KEY for a higher limit"
+        text += ". Anonymous publishing is rate limited per IP; set BEACON_API_KEY for a higher limit"
     return text
 
 
@@ -436,10 +436,10 @@ def create_site(client, files, slug):
 
 
 def publish(args):
-    base = (args.api_url or os.environ.get("CHORUS_API_URL") or DEFAULT_API_URL).rstrip("/")
+    base = (args.api_url or os.environ.get("BEACON_API_URL") or os.environ.get("CHORUS_API_URL") or DEFAULT_API_URL).rstrip("/")
     api_key = ""
     if not args.anonymous:
-        api_key = os.environ.get("CHORUS_API_KEY") or os.environ.get("BEACON_API_KEY") or config_api_key()
+        api_key = os.environ.get("BEACON_API_KEY") or os.environ.get("CHORUS_API_KEY") or config_api_key()
     wanted_slug = (args.slug_flag or args.slug or "").strip().lower()
 
     expires_at = None
@@ -447,7 +447,7 @@ def publish(args):
         expires_at, seconds = parse_expires(args.expires)
         if not api_key and seconds is not None and seconds > 86400:
             raise PublishError("--expires %s is more than 24 hours: without an API key a site can only expire "
-                               "sooner. Sign in (or set CHORUS_API_KEY) to keep a site longer" % args.expires)
+                               "sooner. Sign in (or set BEACON_API_KEY) to keep a site longer" % args.expires)
 
     entries, skipped = collect(args.path)
     if not entries:
@@ -512,7 +512,7 @@ def publish(args):
         notes.append(
             "the server returned no upload URL for %d file(s), so their bytes were not sent. "
             "This is expected from a beacon server in --dev-mode (no object storage); "
-            "chorus.host always returns URLs." % len(missing_url))
+            "beacon.host always returns URLs." % len(missing_url))
 
     finalize_url = version.get("finalizeUrl") or "/v1/sites/%s/versions/%s/finalize" % (slug, version.get("id", ""))
     status, fin = client.call("POST", finalize_url, claim_token=claim_token, retries=1)
@@ -574,16 +574,16 @@ def publish(args):
 def main(argv=None):
     parser = argparse.ArgumentParser(
         prog="publish.py",
-        description="Publish a folder or file to chorus.host and print its URL. "
+        description="Publish a folder or file to beacon.host and print its URL. "
                     "Standard library only; no install needed.",
-        epilog="Environment: CHORUS_API_KEY or BEACON_API_KEY (optional, makes sites permanent; "
-               "falls back to ~/.config/beacon/config.json), CHORUS_API_URL (default %s), "
-               "CHORUS_CLIENT (your agent, e.g. claude-code/2.0). Docs: %s" % (DEFAULT_API_URL, DOCS_URL),
+        epilog="Environment: BEACON_API_KEY (optional, makes sites permanent; "
+               "falls back to ~/.config/beacon/config.json), BEACON_API_URL (default %s), "
+               "BEACON_CLIENT (your agent, e.g. claude-code/2.0). Docs: %s" % (DEFAULT_API_URL, DOCS_URL),
     )
     parser.add_argument("path", help="folder or file to publish (use . for the current folder)")
-    parser.add_argument("slug", nargs="?", default="", help="subdomain to use, e.g. my-site for my-site.chorus.host")
+    parser.add_argument("slug", nargs="?", default="", help="subdomain to use, e.g. my-site for my-site.beacon.host")
     parser.add_argument("--slug", dest="slug_flag", metavar="SLUG", default="", help="same as the positional slug")
-    parser.add_argument("--api-url", default="", help="API base URL (default: $CHORUS_API_URL or %s)" % DEFAULT_API_URL)
+    parser.add_argument("--api-url", default="", help="API base URL (default: $BEACON_API_URL or %s)" % DEFAULT_API_URL)
     parser.add_argument("--expires", default="", metavar="WHEN",
                         help="delete the site at this time: 90m, 2h, 7d or RFC 3339 (max 24h without an API key)")
     parser.add_argument("--anonymous", action="store_true", help="ignore any API key and publish a 24-hour anonymous site")

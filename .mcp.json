@@ -1,8 +1,8 @@
 {
   "mcpServers": {
-    "chorus": {
+    "beacon": {
       "type": "http",
-      "url": "https://chorus.host/mcp"
+      "url": "https://beacon.host/mcp"
     }
   }
 }

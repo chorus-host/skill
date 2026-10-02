@@ -1,16 +1,16 @@
 {
-  "name": "chorus-host",
+  "name": "beacon-host",
   "version": "0.1.0",
-  "description": "Publish static sites to <slug>.chorus.host and deploy Cloudflare Workers at <slug>.worker.chorus.host.",
+  "description": "Publish static sites to <slug>.beacon.host and deploy Cloudflare Workers at <slug>.worker.beacon.host.",
   "author": {
-    "name": "chorus.host",
-    "url": "https://chorus.host"
+    "name": "beacon.host",
+    "url": "https://beacon.host"
   },
-  "homepage": "https://chorus.host",
-  "repository": "https://github.com/chorus-host/skill",
+  "homepage": "https://beacon.host",
+  "repository": "https://github.com/beacon-host/skill",
   "license": "MIT",
   "keywords": [
-    "chorus.host",
+    "beacon.host",
     "publish",
     "static-hosting",
     "deploy",
@@ -21,19 +21,19 @@
   ],
   "skills": "./skills/",
   "interface": {
-    "displayName": "chorus.host",
+    "displayName": "beacon.host",
     "shortDescription": "Publish websites and deploy API backends from Codex.",
-    "longDescription": "Publish HTML files, static sites, reports, and dashboards to a public HTTPS URL at <slug>.chorus.host, and deploy APIs and webhooks as Cloudflare Workers at <slug>.worker.chorus.host. Anonymous sites need no account and last 24 hours. Sign in with an emailed code to keep them.",
-    "developerName": "chorus.host",
+    "longDescription": "Publish HTML files, static sites, reports, and dashboards to a public HTTPS URL at <slug>.beacon.host, and deploy APIs and webhooks as Cloudflare Workers at <slug>.worker.beacon.host. Anonymous sites need no account and last 24 hours. Sign in with an emailed code to keep them.",
+    "developerName": "beacon.host",
     "category": "Coding",
     "capabilities": [
       "Interactive",
       "Write"
     ],
-    "websiteURL": "https://chorus.host",
+    "websiteURL": "https://beacon.host",
     "defaultPrompt": [
-      "Publish this folder to chorus.host and give me the link",
-      "Deploy this Hono app as a chorus.host worker"
+      "Publish this folder to beacon.host and give me the link",
+      "Deploy this Hono app as a beacon.host worker"
     ],
     "brandColor": "#09090B",
     "logo": "./assets/logo.svg"
